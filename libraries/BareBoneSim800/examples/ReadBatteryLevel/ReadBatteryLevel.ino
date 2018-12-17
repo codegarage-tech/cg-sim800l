@@ -36,9 +36,7 @@
 */
 
 #include <BareBoneSim800.h>
-
-//BareBoneSim800 sim800; // 
-BareBoneSim800 sim800("gpinternet");  //needed for gprs funtionality 
+BareBoneSim800 sim800("gloworld");  //to declare the library
 
 
 void setup() {
@@ -46,7 +44,7 @@ void setup() {
   sim800.begin();
   while(!Serial);
 
-  Serial.println("Testing GSM module For Sleep & PowerDown Mode");
+  Serial.println("Testing GSM module For Battery Reading");
   delay(8000); // this delay is necessary, it helps the device to be ready and connect to a network
 
   Serial.println("Should be ready by now");
@@ -56,22 +54,11 @@ void setup() {
   else
     Serial.println("Not Attached");
 
-   // Enable Sleep mode
-  bool sleepActivated = sim800.enterSleepMode();
-  if(sleepActivated)
-    Serial.println("Sleep Mode/Low Power Activated");
-  else
-    Serial.println("Sleep not Activated");
-
-    delay(5000); // let it sleep for about 5secs
-  // disable sleep mode
-  
-  bool disableSleep = sim800.disableSleep();
-    if(disableSleep)
-    Serial.println("Sleep Mode/Low Power Disabled");
-  else
-    Serial.println("Sleep not Disbaled");
-    
+ // Reading Battery Percentage Level
+ int batteryPercent = sim800.getBattPercent();
+ Serial.print("Battery Percentage is: ");
+ Serial.println(batteryPercent);
+     
 
 }
 

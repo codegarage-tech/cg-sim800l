@@ -37,16 +37,19 @@
 
 #include <BareBoneSim800.h>
 
-//BareBoneSim800 sim800; // 
-BareBoneSim800 sim800("gpinternet");  //needed for gprs funtionality 
+BareBoneSim800 sim800; // 
+//BareBoneSim800 sim800("your APN");  //needed for gprs funtionality 
 
+int previousSMSIndex = 0;
+int currentSMSIndex = 0;
+String message = "";
 
 void setup() {
   Serial.begin(9600);
   sim800.begin();
   while(!Serial);
 
-  Serial.println("Testing GSM module For Sleep & PowerDown Mode");
+  Serial.println("Testing GSM module For New SMS Checking");
   delay(8000); // this delay is necessary, it helps the device to be ready and connect to a network
 
   Serial.println("Should be ready by now");
@@ -56,26 +59,37 @@ void setup() {
   else
     Serial.println("Not Attached");
 
-   // Enable Sleep mode
-  bool sleepActivated = sim800.enterSleepMode();
-  if(sleepActivated)
-    Serial.println("Sleep Mode/Low Power Activated");
-  else
-    Serial.println("Sleep not Activated");
+    // Save the last sms
+    currentSMSIndex = sim800.currentMessageIndex; //reads the last saved sms index
+    previousSMSIndex = currentSMSIndex;
 
-    delay(5000); // let it sleep for about 5secs
-  // disable sleep mode
-  
-  bool disableSleep = sim800.disableSleep();
-    if(disableSleep)
-    Serial.println("Sleep Mode/Low Power Disabled");
-  else
-    Serial.println("Sleep not Disbaled");
-    
+   Serial.println("Ready, Send your new SMS");
+   
+   /*//Receiving and Viewing SMS
+ String message = "";
+ int messageIndex = 1;
+ message = sim800.readSMS(messageIndex);
+ Serial.print("Received message is: ");
+ Serial.println(message);
+     */
 
 }
 
 void loop() {
   //zZZzz
 
+  bool checkSMS = sim800.checkNewSMS();
+  if (checkSMS)
+  {
+    Serial.println("New SMS receieved");
+    currentSMSIndex = sim800.currentMessageIndex;
+    //lets read the sms
+     message = sim800.readSMS(currentSMSIndex);
+    Serial.print("Received message is: ");
+    Serial.println(message);
+    previousSMSIndex = currentSMSIndex; // update your sms index
+      
+  }
+  
+  delay(5000);
 }

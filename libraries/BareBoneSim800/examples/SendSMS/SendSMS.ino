@@ -37,8 +37,9 @@
 
 #include <BareBoneSim800.h>
 
-//BareBoneSim800 sim800; // 
-BareBoneSim800 sim800("gpinternet");  //needed for gprs funtionality 
+BareBoneSim800 sim800; // 
+//BareBoneSim800 sim800("your APN");  //needed for gprs funtionality 
+
 
 
 void setup() {
@@ -46,7 +47,7 @@ void setup() {
   sim800.begin();
   while(!Serial);
 
-  Serial.println("Testing GSM module For Sleep & PowerDown Mode");
+  Serial.println("Testing GSM module For SMS Sending");
   delay(8000); // this delay is necessary, it helps the device to be ready and connect to a network
 
   Serial.println("Should be ready by now");
@@ -56,22 +57,19 @@ void setup() {
   else
     Serial.println("Not Attached");
 
-   // Enable Sleep mode
-  bool sleepActivated = sim800.enterSleepMode();
-  if(sleepActivated)
-    Serial.println("Sleep Mode/Low Power Activated");
-  else
-    Serial.println("Sleep not Activated");
+   //Testing sending SMS aspect
 
-    delay(5000); // let it sleep for about 5secs
-  // disable sleep mode
-  
-  bool disableSleep = sim800.disableSleep();
-    if(disableSleep)
-    Serial.println("Sleep Mode/Low Power Disabled");
-  else
-    Serial.println("Sleep not Disbaled");
-    
+   const char* number = "+2347038945220";
+   char* message = "Hello, This is a text message";
+   
+   delay(1000);
+   
+   bool messageSent = sim800.sendSMS(number, message);
+   if(messageSent)
+      Serial.println("Message Sent");
+   else
+      Serial.println("Not Sent, Something happened");
+     
 
 }
 

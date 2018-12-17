@@ -37,8 +37,8 @@
 
 #include <BareBoneSim800.h>
 
-//BareBoneSim800 sim800; // 
-BareBoneSim800 sim800("gpinternet");  //needed for gprs funtionality 
+BareBoneSim800 sim800; // 
+//BareBoneSim800 sim800("your APN");  //needed for gprs funtionality 
 
 
 void setup() {

@@ -30,23 +30,29 @@
  *        Created on: Oct 24, 2017
  *        Author: Ayo Ayibiowu
  *        Email: charlesayibiowu@hotmail.com
- *        Version: v1.0
+ *        Version: v1.1
  *        
  *
 */
 
 #include <BareBoneSim800.h>
 
-//BareBoneSim800 sim800; // 
-BareBoneSim800 sim800("gpinternet");  //needed for gprs funtionality 
+BareBoneSim800 sim800("your APN network", "your USERNAME", "your PASSWORD");  //to declare the library with an APN, UserName and Password
+//BareBoneSim800 sim800("gloworld");
 
+// Connecting to the Internet and Acting as an HTTP Web Client
+// username and password has been set to "" in the Library Code
+ const char resource[] = "m2msupport.net/m2msupport/test.php";
+//http://www.m2msupport.net/m2msupport/test.php
+
+ const int port = 80;
 
 void setup() {
   Serial.begin(9600);
   sim800.begin();
   while(!Serial);
 
-  Serial.println("Testing GSM module For Sleep & PowerDown Mode");
+  Serial.println("Testing GSM module For GPRS Connectivity");
   delay(8000); // this delay is necessary, it helps the device to be ready and connect to a network
 
   Serial.println("Should be ready by now");
@@ -56,22 +62,25 @@ void setup() {
   else
     Serial.println("Not Attached");
 
-   // Enable Sleep mode
-  bool sleepActivated = sim800.enterSleepMode();
-  if(sleepActivated)
-    Serial.println("Sleep Mode/Low Power Activated");
-  else
-    Serial.println("Sleep not Activated");
+// Connecting the the GPRS APN Network
+ Serial.println(" Connecting to APN");
+ bool netConnect = sim800.gprsConnect();
+ if(netConnect)
+  Serial.println("Connected to Network");
+ else
+  Serial.println("An Error Occured");
 
-    delay(5000); // let it sleep for about 5secs
-  // disable sleep mode
+  if(netConnect)
+  {    
+    Serial.println("Making HTTP Get Request");
+    String result = sim800.sendHTTPData(resource);
+    Serial.println("Received Info: ");
+    Serial.println(result);
   
-  bool disableSleep = sim800.disableSleep();
-    if(disableSleep)
-    Serial.println("Sleep Mode/Low Power Disabled");
-  else
-    Serial.println("Sleep not Disbaled");
+  }
     
+    sim800.closeHTTP(); // disconnect from server
+    sim800.gprsDisconnect();
 
 }
 
