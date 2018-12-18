@@ -37,8 +37,10 @@
 
 #include <BareBoneSim800.h>
 
-//BareBoneSim800 sim800; // 
-BareBoneSim800 sim800("gpinternet");  //needed for gprs funtionality 
+BareBoneSim800 sim800("gpinternet");  //to declare the library with an APN
+//BareBoneSim800 sim800("gloworld");
+
+// username and password has been set to "" in the Library Code
 
 
 void setup() {
@@ -46,7 +48,7 @@ void setup() {
   sim800.begin();
   while(!Serial);
 
-  Serial.println("Testing GSM module For Sleep & PowerDown Mode");
+  Serial.println("Testing GSM module For Time Reading and Location");
   delay(8000); // this delay is necessary, it helps the device to be ready and connect to a network
 
   Serial.println("Should be ready by now");
@@ -56,14 +58,7 @@ void setup() {
   else
     Serial.println("Not Attached");
 
-   // Enable Sleep mode
-  bool sleepActivated = sim800.enterSleepMode();
-  if(sleepActivated)
-    Serial.println("Sleep Mode/Low Power Activated");
-  else
-    Serial.println("Sleep not Activated");
-
-    delay(5000); // let it sleep for about 5secs
+   delay(5000); // let it sleep for about 5secs
   // disable sleep mode
   
   bool disableSleep = sim800.disableSleep();
@@ -71,8 +66,29 @@ void setup() {
     Serial.println("Sleep Mode/Low Power Disabled");
   else
     Serial.println("Sleep not Disbaled");
-    
 
+String simNumber = sim800.readSIMNumber();
+Serial.print("Sim number is: "+simNumber);
+
+    //Send sms
+//    bool isSmsSent = sim800.sendSMS("8801794620787", "Hello");
+//    if(isSmsSent)
+//    Serial.println("Sms is sent");
+//  else
+//    Serial.println("Sms is not sent");
+//
+//    delay(5000); // let it sleep for about 5secs
+
+ // Testing for Time Reading and Location
+// String time1 = "";
+// String location = "";
+// time1 = sim800.getTime();
+// delay(100);
+// location = sim800.getLocation();
+// Serial.print("Time received in GMT is: ");
+// Serial.println(time1);
+// Serial.print("Location is: ");
+// Serial.println(location);
 }
 
 void loop() {
